@@ -1,4 +1,6 @@
 import pickle
+import time
+
 import pandas as pd
 import numpy as np
 
@@ -23,6 +25,8 @@ def run_model(test_array):
     lr_pred = lr_pred.reshape(-1, 1)
 
     aggregate_pred = np.mean(np.array([lr_pred, rf_pred]), axis=0)
+    # print('process time: ')
+    # print(time.process_time())
     return aggregate_pred
 
 

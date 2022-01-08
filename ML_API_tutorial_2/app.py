@@ -2,6 +2,7 @@ import numpy as np
 from flask import Flask, request, jsonify
 from lib.models.run_model import run_model
 from lib.models.transform_data import process_array
+import time
 
 app = Flask(__name__)
 
@@ -16,6 +17,7 @@ def home():
 
 @app.route('/predict', methods=['GET'])
 def predict():
+    t1_start = time.process_time()
     glucose_array = request.args.get('glucose_array')
     # return "glucose array received {}".format(glucose_array)
 
@@ -32,7 +34,10 @@ def predict():
     # return "glucose array received {}".format(glucose_array)
 
     result = run_model(glucose_array)
+    t1_stop = time.process_time()
 
+    print("Elapsed time:",
+          t1_stop - t1_start)
     return "glucose array received {}".format(result)
 
     # print(glucose_array)

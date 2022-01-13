@@ -25,6 +25,10 @@ def run_model(test_array):
     lr_pred = lr_pred.reshape(-1, 1)
 
     aggregate_pred = np.mean(np.array([lr_pred, rf_pred]), axis=0)
+    aggregate_pred = aggregate_pred.reshape(-1)
+    aggregate_pred = aggregate_pred.tolist()
+    aggregate_pred = str(aggregate_pred)
+
     # print('process time: ')
     # print(time.process_time())
     return aggregate_pred

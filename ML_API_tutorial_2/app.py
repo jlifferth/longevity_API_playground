@@ -1,13 +1,19 @@
+import sqlite3
+import time
+
 import numpy as np
-from flask import Flask, request, jsonify
+from flask import Flask, request
+
 from lib.models.run_model import run_model
 from lib.models.transform_data import process_array
-import time
 
 app = Flask(__name__)
 
 
-# model = run_model()
+def get_db_connection():
+    conn = sqlite3.connect('database.db')
+    conn.row_factory = sqlite3.Row
+    return conn
 
 
 @app.route('/')
@@ -18,7 +24,12 @@ def home():
 @app.route('/predict', methods=['GET'])
 def predict():
     t1_start = time.process_time()
+
+    remote_address = request.remote_addr
+    print('remote address: ', str(remote_address))
+
     glucose_array = request.args.get('glucose_array')
+    glucose_received = str(glucose_array)
     # return "glucose array received {}".format(glucose_array)
 
     glucose_array = glucose_array.split(',')
@@ -35,10 +46,17 @@ def predict():
 
     result = run_model(glucose_array)
     t1_stop = time.process_time()
+    elapsed_time = t1_stop - t1_start
 
     print("Elapsed time:",
-          t1_stop - t1_start)
-    return "glucose array received {}".format(result)
+          elapsed_time)
+    conn = get_db_connection()
+    conn.execute("INSERT INTO requests (remote_address, received, prediction, runtime) VALUES (?, ?, ?, ?)",
+                 (remote_address, glucose_received, result, elapsed_time))
+    conn.commit()
+    conn.close()
+
+    return "glucose array received\n prediction: {}".format(result)
 
     # print(glucose_array)
 

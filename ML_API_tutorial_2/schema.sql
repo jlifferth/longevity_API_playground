@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS requests;
+
+CREATE TABLE requests (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    received TEXT NOT NULL,
+    prediction TEXT NOT NULL,
+    runtime FLOAT
+);
